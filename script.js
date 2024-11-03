@@ -24,6 +24,12 @@ document.getElementById('toggle-theme').addEventListener('click', toggleTheme);
 loadTheme();
 
 // Các mã tính toán ngày Tết Nguyên Đán và hiển thị kết quả
+/**
+ * Copyright 2004 Ho Ngoc Duc [http://come.to/duc]. All Rights Reserved.<p>
+ * Permission to use, copy, modify, and redistribute this software and its
+ * documentation for personal, non-commercial use is hereby granted provided that
+ * this copyright notice appears in all copies.
+ */
 function jdFromDate(dd, mm, yy) {
     if (mm < 3) {
         yy--;
