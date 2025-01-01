@@ -79,18 +79,37 @@ function getLunarNewYear(year, timeZone) {
     return lunarNewYear;
 }
 
+function getLunarNewYear(year, timeZone) {
+    const k = Math.floor((jdFromDate(31, 12, year - 1) - 2415021.076998695) / 29.530588853);
+    const lunarNewYearJD = getNewMoonDay(k + 1, timeZone);
+    return lunarNewYearJD;
+}
+
 function getNextLunarNewYear(timeZone) {
-    var today = new Date();
-    var currentYear = today.getFullYear();
+    const today = new Date(); // Ngày hiện tại
+    const currentYear = today.getFullYear(); // Năm hiện tại
 
-    var currentLunarNewYear = getLunarNewYear(currentYear, timeZone);
-    
-    if (jdFromDate(today.getDate(), today.getMonth() + 1, currentYear) >= currentLunarNewYear) {
-        currentLunarNewYear = getLunarNewYear(currentYear + 1, timeZone);
+    // Tính ngày Tết Nguyên Đán năm nay
+    const lunarNewYearThisYearJD = getLunarNewYear(currentYear, timeZone);
+    const lunarNewYearThisYear = jdToDate(lunarNewYearThisYearJD);
+
+    // Chuyển ngày hôm nay sang Julian
+    const todayJD = jdFromDate(today.getDate(), today.getMonth() + 1, today.getFullYear());
+
+    if (todayJD < lunarNewYearThisYearJD) {
+        // Nếu hôm nay trước Tết Nguyên Đán năm nay, trả về ngày Tết năm nay
+        return lunarNewYearThisYear;
+    } else {
+        // Nếu hôm nay là Tết hoặc qua, trả về ngày Tết năm sau
+        const lunarNewYearNextYearJD = getLunarNewYear(currentYear + 1, timeZone);
+        return jdToDate(lunarNewYearNextYearJD);
     }
+}
 
-    var lunarNewYearDate = jdToDate(currentLunarNewYear);
-    return lunarNewYearDate;
+function getLunarNewYear(year, timeZone) {
+    const k = Math.floor((jdFromDate(31, 12, year - 1) - 2415021.076998695) / 29.530588853);
+    const lunarNewYearJD = getNewMoonDay(k + 1, timeZone);
+    return lunarNewYearJD;
 }
 
 function jdToDate(jd) {
@@ -110,6 +129,17 @@ function jdToDate(jd) {
     var year = (month > 2) ? c - 4716 : c - 4715;
 
     return { day: Math.floor(day), month: month, year: year };
+}
+
+function jdFromDate(dd, mm, yy) {
+    if (mm < 3) {
+        yy--;
+        mm += 12;
+    }
+    var A = Math.floor(yy / 100);
+    var B = 2 - A + Math.floor(A / 4);
+    var jd = Math.floor(365.25 * (yy + 4716)) + Math.floor(30.6001 * (mm + 1)) + dd + B - 1524.5;
+    return jd;
 }
 
 function calculateDaysUntilNextMonday(nextDate) {
